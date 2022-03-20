@@ -79,5 +79,5 @@ FVector ASCharacter::GetPawnViewLocation() const
 		return CameraComp->GetComponentLocation();
 	}
 
-	return GetActorForwardVector();
+	return Super::GetPawnViewLocation();
 }
