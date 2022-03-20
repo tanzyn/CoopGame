@@ -59,22 +59,22 @@ void ASWeapon::Fire()
 			}
 
 			TracerEndPoint = Hit.ImpactPoint;
+
+			if (TracerEffect)
+			{
+				FVector MuzzleLocation = MeshComp->GetSocketLocation(MuzzleSocketName);
+
+				UParticleSystemComponent* TracerComp = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), TracerEffect, MuzzleLocation);
+				if (TracerComp)
+				{
+					TracerComp->SetVectorParameter(TracerTargetName, TracerEndPoint);
+				}
+			}
 		}
 
 		if (MuzzleEffect)
 		{
 			UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, MeshComp, MuzzleSocketName);
-		}
-
-		if (TracerEffect)
-		{
-			FVector MuzzleLocation = MeshComp->GetSocketLocation(MuzzleSocketName);
-
-			UParticleSystemComponent* TracerComp = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), TracerEffect, MuzzleLocation);
-			if (TracerComp)
-			{
-				TracerComp->SetVectorParameter(TracerTargetName, TracerEndPoint);
-			}
 		}
 	}
 }
