@@ -18,6 +18,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* MeshComp;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Physics")
+	float ImpulseAmount;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

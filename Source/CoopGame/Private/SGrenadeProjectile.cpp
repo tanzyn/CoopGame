@@ -2,6 +2,7 @@
 
 
 #include "SGrenadeProjectile.h"
+#include "Components/PrimitiveComponent.h"
 
 // Sets default values
 ASGrenadeProjectile::ASGrenadeProjectile()
@@ -18,7 +19,8 @@ ASGrenadeProjectile::ASGrenadeProjectile()
 void ASGrenadeProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	MeshComp->AddImpulse(GetActorForwardVector() * ImpulseAmount, NAME_None, true);
 }
 
 // Called every frame
