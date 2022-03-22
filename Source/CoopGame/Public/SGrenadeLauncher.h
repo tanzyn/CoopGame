@@ -20,6 +20,6 @@ protected:
 
 	virtual void Fire() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TSubclassOf<ASGrenadeProjectile> ProjectileClass;
 };
