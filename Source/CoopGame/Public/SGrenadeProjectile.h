@@ -25,6 +25,13 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	FTimerHandle ExplosionTimerHandle;
+
+	void Explode();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FX")
+	UParticleSystem* ExplosionEffect;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

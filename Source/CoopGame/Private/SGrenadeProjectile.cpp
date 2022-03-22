@@ -3,6 +3,8 @@
 
 #include "SGrenadeProjectile.h"
 #include "Components/PrimitiveComponent.h"
+#include "SGrenadeLauncher.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ASGrenadeProjectile::ASGrenadeProjectile()
@@ -21,6 +23,19 @@ void ASGrenadeProjectile::BeginPlay()
 	Super::BeginPlay();
 
 	MeshComp->AddImpulse(GetActorForwardVector() * ImpulseAmount, NAME_None, true);
+	GetWorld()->GetTimerManager().SetTimer(ExplosionTimerHandle, this, &ASGrenadeProjectile::Explode, 3.0f);
+}
+
+void ASGrenadeProjectile::Explode()
+{
+	ASGrenadeLauncher* MyOwner = Cast<ASGrenadeLauncher>(GetOwner());
+
+	if (ExplosionEffect)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, GetActorLocation());
+	}
+
+	Destroy();
 }
 
 // Called every frame
