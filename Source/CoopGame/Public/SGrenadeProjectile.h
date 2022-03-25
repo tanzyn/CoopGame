@@ -31,6 +31,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FX")
 	UParticleSystem* ExplosionEffect;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FX")
+	USoundBase* ExplosionSoundEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	TSubclassOf<UDamageType> DamageType;
 
 public:	
 	// Called every frame

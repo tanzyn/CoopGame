@@ -35,6 +35,19 @@ void ASGrenadeProjectile::Explode()
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, GetActorLocation());
 	}
 
+	if (ExplosionSoundEffect)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), ExplosionSoundEffect   );
+	}
+
+	if (DamageType)
+	{
+		TArray<AActor*> IgnoreActors;
+		IgnoreActors.Add(this);
+		IgnoreActors.Add(MyOwner);
+		UGameplayStatics::ApplyRadialDamage(GetWorld(), 10.0f, GetActorLocation(), 500.0f, DamageType, IgnoreActors);
+	}
+
 	Destroy();
 }
 
