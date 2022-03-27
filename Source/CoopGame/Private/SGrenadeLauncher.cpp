@@ -14,7 +14,7 @@ void ASGrenadeLauncher::Fire()
 	if (ProjectileClass)
 	{
 		FVector MuzzleLocation = MeshComp->GetSocketLocation("MuzzleSocket");
-		FRotator MuzzleRotation = MeshComp->GetSocketRotation("MuzzleSocket");
+		FRotator MuzzleRotation = GetInstigatorController()->GetControlRotation();
 
 		FActorSpawnParameters ActorSpawnParams;
 		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
