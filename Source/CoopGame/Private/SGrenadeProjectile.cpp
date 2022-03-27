@@ -36,7 +36,7 @@ void ASGrenadeProjectile::Explode()
 
 	if (ExplosionSoundEffect)
 	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ExplosionSoundEffect   );
+		UGameplayStatics::PlaySound2D(GetWorld(), ExplosionSoundEffect);
 	}
 
 	if (DamageType)
