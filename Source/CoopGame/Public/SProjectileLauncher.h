@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "SWeapon.h"
-#include "SGrenadeLauncher.generated.h"
+#include "SProjectileLauncher.generated.h"
 
 /**
  * 
  */
-class ASGrenadeProjectile;
+class ASProjectile;
 UCLASS()
-class COOPGAME_API ASGrenadeLauncher : public ASWeapon
+class COOPGAME_API ASProjectileLauncher : public ASWeapon
 {
 	GENERATED_BODY()
 	
@@ -21,5 +21,5 @@ protected:
 	virtual void Fire() override;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	TSubclassOf<ASGrenadeProjectile> ProjectileClass;
+	TSubclassOf<ASProjectile> ProjectileClass;
 };

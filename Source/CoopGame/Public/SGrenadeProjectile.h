@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "SProjectile.h"
 #include "SGrenadeProjectile.generated.h"
 
 UCLASS()
-class COOPGAME_API ASGrenadeProjectile : public AActor
+class COOPGAME_API ASGrenadeProjectile : public ASProjectile
 {
 	GENERATED_BODY()
 	

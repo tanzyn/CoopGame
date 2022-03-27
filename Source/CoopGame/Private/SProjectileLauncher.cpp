@@ -1,15 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SGrenadeLauncher.h"
-#include "SGrenadeProjectile.h"
+#include "SProjectileLauncher.h"
+#include "SProjectile.h"
 
-void ASGrenadeLauncher::BeginPlay()
+void ASProjectileLauncher::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void ASGrenadeLauncher::Fire()
+void ASProjectileLauncher::Fire()
 {
 	if (ProjectileClass)
 	{
@@ -20,6 +20,6 @@ void ASGrenadeLauncher::Fire()
 		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 		ActorSpawnParams.Owner = this;
 
-		AActor* actor = GetWorld()->SpawnActor<ASGrenadeProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, ActorSpawnParams);
+		AActor* actor = GetWorld()->SpawnActor<ASProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, ActorSpawnParams);
 	}
 }

@@ -3,7 +3,7 @@
 
 #include "SGrenadeProjectile.h"
 #include "Components/PrimitiveComponent.h"
-#include "SGrenadeLauncher.h"
+#include "SProjectileLauncher.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -27,7 +27,7 @@ void ASGrenadeProjectile::BeginPlay()
 
 void ASGrenadeProjectile::Explode()
 {
-	ASGrenadeLauncher* MyOwner = Cast<ASGrenadeLauncher>(GetOwner());
+	ASProjectileLauncher* MyOwner = Cast<ASProjectileLauncher>(GetOwner());
 
 	if (ExplosionEffect)
 	{
