@@ -22,7 +22,7 @@ void ASGrenadeProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	MeshComp->AddImpulse(GetActorForwardVector() * ImpulseAmount, NAME_None, true);
-	GetWorld()->GetTimerManager().SetTimer(ExplosionTimerHandle, this, &ASGrenadeProjectile::Explode, 3.0f);
+	GetWorld()->GetTimerManager().SetTimer(ExplosionTimerHandle, this, &ASGrenadeProjectile::Explode, ExplodeDelay);
 }
 
 void ASGrenadeProjectile::Explode()
