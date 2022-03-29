@@ -7,6 +7,7 @@
 #include "SProjectile.h"
 #include "SingularityProjectile.generated.h"
 
+class USphereComponent;
 UCLASS()
 class COOPGAME_API ASingularityProjectile : public ASProjectile
 {
@@ -25,6 +26,18 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Physics")
 	float ImpulseAmount;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USphereComponent* CollisionSphereComp;
+
+	UFUNCTION()
+	void CollapseIntoBlackhole(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	TSubclassOf<AActor> ClassFilter;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	TSubclassOf<UDamageType> DamageType;
 
 public:	
 	// Called every frame
