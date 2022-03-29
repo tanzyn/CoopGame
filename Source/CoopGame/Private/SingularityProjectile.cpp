@@ -4,6 +4,7 @@
 #include "SingularityProjectile.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "BlackHole.h"
 #include "SProjectileLauncher.h"
 
 // Sets default values
@@ -17,10 +18,9 @@ ASingularityProjectile::ASingularityProjectile()
 	MeshComp->SetSimulatePhysics(true);
 	MeshComp->SetEnableGravity(false);
 	MeshComp->SetCollisionResponseToAllChannels(ECR_Block);
+	MeshComp->SetNotifyRigidBodyCollision(true);
 
 	CollisionSphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphereComp"));
-
-	MeshComp->OnComponentHit.AddDynamic(this, &ASingularityProjectile::CollapseIntoBlackhole);
 }
 
 // Called when the game starts or when spawned
@@ -29,6 +29,7 @@ void ASingularityProjectile::BeginPlay()
 	Super::BeginPlay();
 	
 	MeshComp->AddImpulse(GetActorForwardVector() * ImpulseAmount, NAME_None, true);
+	MeshComp->OnComponentHit.AddDynamic(this, &ASingularityProjectile::CollapseIntoBlackhole);
 }
 
 // Called every frame
@@ -40,17 +41,13 @@ void ASingularityProjectile::Tick(float DeltaTime)
 
 void ASingularityProjectile::CollapseIntoBlackhole(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	ASProjectileLauncher* MyOwner = Cast<ASProjectileLauncher>(GetOwner());
-
-	TArray<AActor*> OverlappingActors;
-	CollisionSphereComp->GetOverlappingActors(OverlappingActors, ClassFilter);
-
-	for (auto& actor : OverlappingActors)
+	Destroy();
+	if (ProjectileClass)
 	{
-		TArray<AActor*> IgnoreActors;
-		IgnoreActors.Add(this);
-		IgnoreActors.Add(MyOwner);
-		UGameplayStatics::ApplyRadialDamage(GetWorld(), 10.0f, actor->GetActorLocation(), 500.0f, DamageType, IgnoreActors);
+		FActorSpawnParameters ActorSpawnParams;
+		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		
+		GetWorld()->SpawnActor<ABlackHole>(ProjectileClass, GetActorLocation(), GetActorRotation(), ActorSpawnParams);
 	}
 }
 

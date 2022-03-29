@@ -8,6 +8,7 @@
 #include "SingularityProjectile.generated.h"
 
 class USphereComponent;
+class ABlackHole;
 UCLASS()
 class COOPGAME_API ASingularityProjectile : public ASProjectile
 {
@@ -38,6 +39,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<UDamageType> DamageType;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	TSubclassOf<ABlackHole> ProjectileClass;
 
 public:	
 	// Called every frame

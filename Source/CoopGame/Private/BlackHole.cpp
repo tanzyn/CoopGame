@@ -11,12 +11,16 @@ ABlackHole::ABlackHole()
 
 	InnerMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("InnerMeshComp"));
 	OuterMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("OuterMeshComp"));
+	
+	RootComponent = OuterMeshComp;
+	InnerMeshComp->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
 void ABlackHole::BeginPlay()
 {
 	Super::BeginPlay();
+	InnerMeshComp->SetRelativeLocation(FVector(0));
 	
 }
 
