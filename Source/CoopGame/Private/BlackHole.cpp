@@ -2,6 +2,7 @@
 
 
 #include "BlackHole.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 ABlackHole::ABlackHole()
@@ -12,6 +13,9 @@ ABlackHole::ABlackHole()
 	InnerMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("InnerMeshComp"));
 	OuterMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("OuterMeshComp"));
 	
+	OuterMeshComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+	InnerMeshComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+
 	RootComponent = OuterMeshComp;
 	InnerMeshComp->SetupAttachment(RootComponent);
 }
@@ -29,5 +33,20 @@ void ABlackHole::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	TArray<UPrimitiveComponent*> OutActors;
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(this);
+	TArray< TEnumAsByte< EObjectTypeQuery > > ObjectTypes;
+
+	UKismetSystemLibrary::SphereOverlapComponents(GetWorld(), GetActorLocation(), 50.0f, ObjectTypes, NULL, ActorsToIgnore, OutActors);
+
+	for (UPrimitiveComponent* actor : OutActors)
+	{
+		actor->SetSimulatePhysics(true);
+		
+		actor->AddRadialForce(actor->GetRightVector(), 300.f, -8000.f, RIF_Linear, true);
+
+		actor->AddRadialForce(GetActorLocation(), 30000.f, -8000.f, RIF_Linear, true);
+	}
 }
 
