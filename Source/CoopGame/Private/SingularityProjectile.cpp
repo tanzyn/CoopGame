@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "BlackHole.h"
+#include "SCharacter.h"
 #include "SProjectileLauncher.h"
 
 // Sets default values
