@@ -36,6 +36,16 @@ protected:
 
 	void EndCrouch();
 
+	bool bWantsToZoom;
+
+	float DefaultFOV;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player")
+	float ZoomedFOV;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Player", meta = (ClampMin = 0.1, ClampMax = 100.0f))
+	float ZoomInteropSpeed;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -44,4 +54,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual FVector GetPawnViewLocation() const override;
+
+	void BeginZoom();
+
+	void EndZoom();
 };

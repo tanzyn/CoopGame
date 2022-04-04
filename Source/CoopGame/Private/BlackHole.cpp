@@ -44,9 +44,7 @@ void ABlackHole::Tick(float DeltaTime)
 	{
 		actor->SetSimulatePhysics(true);
 		
-		actor->AddRadialForce(actor->GetRightVector(), 300.f, -8000.f, RIF_Linear, true);
-
-		actor->AddRadialForce(GetActorLocation(), 30000.f, -8000.f, RIF_Linear, true);
+		actor->AddRadialForce(GetActorLocation(), 300.f, -8000.f, RIF_Constant, true);
 	}
 }
 
