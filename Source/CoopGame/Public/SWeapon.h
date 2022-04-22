@@ -21,6 +21,9 @@ public:
 
 	void StartFire();
 	void StopFire();
+
+	void Reload();
+
 protected:
 		virtual void Fire();
 
@@ -66,4 +69,14 @@ protected:
 	float BulletsPerMinute;
 
 	float TimeBetweenShots;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta=(ClampMin="0", ClampMax="45"))
+	int BulletSpread;
+
+	FRotator ApplyBulletSpread();
+
+	int AmmoLeft;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin="10", ClampMax="300"))
+	int AmmoCapacity;
 };

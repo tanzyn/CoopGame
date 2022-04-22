@@ -32,13 +32,21 @@ void ASWeapon::BeginPlay()
 
 void ASWeapon::StartFire()
 {
-	float FirstDelay = FMath::Max(LastFireTime + TimeBetweenShots - GetWorld()->TimeSeconds, .0f);
-	GetWorldTimerManager().SetTimer(TimerHandle_TimeBetweenShots, this, &ASWeapon::Fire, TimeBetweenShots, true, FirstDelay);
+	if (AmmoLeft > 0) {
+		float FirstDelay = FMath::Max(LastFireTime + TimeBetweenShots - GetWorld()->TimeSeconds, .0f);
+		GetWorldTimerManager().SetTimer(TimerHandle_TimeBetweenShots, this, &ASWeapon::Fire, TimeBetweenShots, true, FirstDelay);
+	}
 }
 
 void ASWeapon::StopFire()
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle_TimeBetweenShots);
+}
+
+
+FRotator ASWeapon::ApplyBulletSpread()
+{
+	return FRotator(rand() % BulletSpread, rand() % BulletSpread, rand() % BulletSpread);
 }
 
 void ASWeapon::Fire()
@@ -50,7 +58,7 @@ void ASWeapon::Fire()
 		FRotator EyeRotation;
 		MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
 
-		FVector ShotDirection = EyeRotation.Vector();
+		FVector ShotDirection = (EyeRotation + ApplyBulletSpread()).Vector();
 		FVector TraceEnd = EyeLocation + (ShotDirection * 1000);
 
 		FCollisionQueryParams QueryParams;
@@ -94,7 +102,7 @@ void ASWeapon::Fire()
 		}
 
 		PlayFireEffects(TracerEndPoint);
-
+		AmmoLeft--;
 		LastFireTime = GetWorld()->TimeSeconds;
 	}
 }
@@ -126,4 +134,9 @@ void ASWeapon::PlayFireEffects(const FVector &TracerEndPoint)
 			PC->ClientPlayCameraShake(RecoilAnim);
 		}
 	}
+}
+
+void ASWeapon::Reload()
+{
+	AmmoLeft = AmmoCapacity;
 }
