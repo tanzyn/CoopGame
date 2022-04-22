@@ -7,4 +7,4 @@
 #define SURFACE_FLESHDEFAULT		SurfaceType1
 #define SURFACE_FLESHVULNERABLE		SurfaceType2
 
-#define ECC_COLLISIONWEAPON			ECC_EngineTraceChannel1
+#define ECC_COLLISIONWEAPON			ECC_GameTraceChannel1

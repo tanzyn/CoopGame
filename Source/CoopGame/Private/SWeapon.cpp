@@ -9,6 +9,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "..\CoopGame.h"
+#include "TimerManager.h"
 
 // Sets default values
 ASWeapon::ASWeapon()
@@ -18,7 +19,26 @@ ASWeapon::ASWeapon()
 	MuzzleSocketName = "MuzzleSocket";
 	TracerTargetName = "BeamEnd";
 
-	WeaponDamage = 20.0f;
+	BaseWeaponDamage = 20.0f;
+	BulletsPerMinute = 600;
+}
+
+void ASWeapon::BeginPlay()
+{
+	Super::BeginPlay();
+
+	TimeBetweenShots = 60 / BulletsPerMinute;
+}
+
+void ASWeapon::StartFire()
+{
+	float FirstDelay = FMath::Max(LastFireTime + TimeBetweenShots - GetWorld()->TimeSeconds, .0f);
+	GetWorldTimerManager().SetTimer(TimerHandle_TimeBetweenShots, this, &ASWeapon::Fire, 1.0f, true, FirstDelay);
+}
+
+void ASWeapon::StopFire()
+{
+	GetWorldTimerManager().ClearTimer(TimerHandle_TimeBetweenShots);
 }
 
 void ASWeapon::Fire()
@@ -41,7 +61,7 @@ void ASWeapon::Fire()
 
 		FHitResult Hit;
 		FVector TracerEndPoint = TraceEnd;
-		bool isBlockingHit = GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceEnd, ECC_EngineTraceChannel1, QueryParams);
+		bool isBlockingHit = GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceEnd, ECC_COLLISIONWEAPON, QueryParams);
 		if (isBlockingHit)
 		{
 			AActor* HitActor = Hit.GetActor();
@@ -49,20 +69,21 @@ void ASWeapon::Fire()
 			EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
 
 			UParticleSystem* SelectedEffect = NULL;
+			float DamageToApply = BaseWeaponDamage;
 			switch (SurfaceType)
 			{
 			case SURFACE_FLESHDEFAULT:
 				SelectedEffect = FleshDefaultImpactEffect;
 				break;
 			case SURFACE_FLESHVULNERABLE:
-				WeaponDamage *= 10;
+				DamageToApply = 10.0f * BaseWeaponDamage;
 				SelectedEffect = FleshVulnerableImpactEffect;
 				break;
 			default:
 				SelectedEffect = DefaultImpactEffect;
 			}
 
-			UGameplayStatics::ApplyPointDamage(HitActor, WeaponDamage, ShotDirection, Hit, MyOwner->GetInstigatorController(), this, DamageType);
+			UGameplayStatics::ApplyPointDamage(HitActor, DamageToApply, ShotDirection, Hit, MyOwner->GetInstigatorController(), this, DamageType);
 
 			if (SelectedEffect)
 			{
@@ -73,6 +94,8 @@ void ASWeapon::Fire()
 		}
 
 		PlayFireEffects(TracerEndPoint);
+
+		LastFireTime = GetWorld()->TimeSeconds;
 	}
 }
 
