@@ -18,6 +18,8 @@ class COOPGAME_API ASCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ASCharacter();
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	ASWeapon* CurrentWeapon;
 
 protected:
 	// Called when the game starts or when spawned
@@ -46,8 +48,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Player", meta = (ClampMin = 0.1, ClampMax = 100.0f))
 		float ZoomInteropSpeed;
-
-	ASWeapon* CurrentWeapon;
 
 	void StartFire();
 	void StopFire();

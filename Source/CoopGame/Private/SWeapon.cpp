@@ -21,6 +21,8 @@ ASWeapon::ASWeapon()
 
 	BaseWeaponDamage = 20.0f;
 	BulletsPerMinute = 600;
+
+	AmmoLeft = 0;
 }
 
 void ASWeapon::BeginPlay()
@@ -28,14 +30,13 @@ void ASWeapon::BeginPlay()
 	Super::BeginPlay();
 
 	TimeBetweenShots = 60 / BulletsPerMinute;
+	Reload();
 }
 
 void ASWeapon::StartFire()
 {
-	if (AmmoLeft > 0) {
-		float FirstDelay = FMath::Max(LastFireTime + TimeBetweenShots - GetWorld()->TimeSeconds, .0f);
-		GetWorldTimerManager().SetTimer(TimerHandle_TimeBetweenShots, this, &ASWeapon::Fire, TimeBetweenShots, true, FirstDelay);
-	}
+	float FirstDelay = FMath::Max(LastFireTime + TimeBetweenShots - GetWorld()->TimeSeconds, .0f);
+	GetWorldTimerManager().SetTimer(TimerHandle_TimeBetweenShots, this, &ASWeapon::Fire, TimeBetweenShots, true, FirstDelay);
 }
 
 void ASWeapon::StopFire()
@@ -52,7 +53,7 @@ FRotator ASWeapon::ApplyBulletSpread()
 void ASWeapon::Fire()
 {
 	AActor* MyOwner = GetOwner();
-	if (MyOwner)
+	if (MyOwner && AmmoLeft > 0)
 	{
 		FVector EyeLocation;
 		FRotator EyeRotation;

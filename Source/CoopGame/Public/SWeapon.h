@@ -24,6 +24,9 @@ public:
 
 	void Reload();
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	int AmmoLeft;
+
 protected:
 		virtual void Fire();
 
@@ -74,8 +77,6 @@ protected:
 	int BulletSpread;
 
 	FRotator ApplyBulletSpread();
-
-	int AmmoLeft;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin="10", ClampMax="300"))
 	int AmmoCapacity;
