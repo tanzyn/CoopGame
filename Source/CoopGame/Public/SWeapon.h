@@ -7,6 +7,7 @@
 #include "SWeapon.generated.h"
 
 class UParticleSystem;
+class UCameraShake;
 UCLASS()
 class COOPGAME_API ASWeapon : public AActor
 {
@@ -33,7 +34,13 @@ protected:
 	UParticleSystem* MuzzleEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	UParticleSystem* ImpactEffect;
+	UParticleSystem* DefaultImpactEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	UParticleSystem* FleshDefaultImpactEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	UParticleSystem* FleshVulnerableImpactEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	UParticleSystem* TracerEffect;
@@ -42,4 +49,9 @@ protected:
 	FName TracerTargetName;
 
 	void PlayFireEffects(const FVector &TracerEndPoint);
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	TSubclassOf<UCameraShakeBase> RecoilAnim;
+
+	float WeaponDamage;
 };

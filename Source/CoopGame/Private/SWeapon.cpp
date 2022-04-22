@@ -7,6 +7,8 @@
 #include "Particles/ParticleSystem.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
+#include "..\CoopGame.h"
 
 // Sets default values
 ASWeapon::ASWeapon()
@@ -15,6 +17,8 @@ ASWeapon::ASWeapon()
 
 	MuzzleSocketName = "MuzzleSocket";
 	TracerTargetName = "BeamEnd";
+
+	WeaponDamage = 20.0f;
 }
 
 void ASWeapon::Fire()
@@ -33,19 +37,36 @@ void ASWeapon::Fire()
 		QueryParams.AddIgnoredActor(MyOwner);
 		QueryParams.AddIgnoredActor(this);
 		QueryParams.bTraceComplex = true;
+		QueryParams.bReturnPhysicalMaterial = true;
 
 		FHitResult Hit;
 		FVector TracerEndPoint = TraceEnd;
-		bool isBlockingHit = GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceEnd, ECC_Visibility, QueryParams);
+		bool isBlockingHit = GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceEnd, ECC_EngineTraceChannel1, QueryParams);
 		if (isBlockingHit)
 		{
 			AActor* HitActor = Hit.GetActor();
 
-			UGameplayStatics::ApplyPointDamage(HitActor, 20.0f, ShotDirection, Hit, MyOwner->GetInstigatorController(), this, DamageType);
+			EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
 
-			if (ImpactEffect)
+			UParticleSystem* SelectedEffect = NULL;
+			switch (SurfaceType)
 			{
-				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
+			case SURFACE_FLESHDEFAULT:
+				SelectedEffect = FleshDefaultImpactEffect;
+				break;
+			case SURFACE_FLESHVULNERABLE:
+				WeaponDamage *= 10;
+				SelectedEffect = FleshVulnerableImpactEffect;
+				break;
+			default:
+				SelectedEffect = DefaultImpactEffect;
+			}
+
+			UGameplayStatics::ApplyPointDamage(HitActor, WeaponDamage, ShotDirection, Hit, MyOwner->GetInstigatorController(), this, DamageType);
+
+			if (SelectedEffect)
+			{
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SelectedEffect, Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
 			}
 
 			TracerEndPoint = Hit.ImpactPoint;
@@ -70,6 +91,16 @@ void ASWeapon::PlayFireEffects(const FVector &TracerEndPoint)
 		if (TracerComp)
 		{
 			TracerComp->SetVectorParameter(TracerTargetName, TracerEndPoint);
+		}
+	}
+
+	APawn* MyOwner = Cast<APawn>(GetOwner());
+	if (MyOwner)
+	{
+		APlayerController* PC = Cast<APlayerController>(MyOwner->GetController());
+		if (PC)
+		{
+			PC->ClientPlayCameraShake(RecoilAnim);
 		}
 	}
 }
