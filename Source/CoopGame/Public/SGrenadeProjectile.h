@@ -41,9 +41,4 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	float ExplodeDelay;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 };

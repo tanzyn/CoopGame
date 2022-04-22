@@ -50,10 +50,3 @@ void ASGrenadeProjectile::Explode()
 	Destroy();
 }
 
-// Called every frame
-void ASGrenadeProjectile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
