@@ -28,7 +28,9 @@ public:
 	int AmmoLeft;
 
 protected:
-		virtual void Fire();
+	virtual void Fire();
+
+	int CurrRecoil;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USkeletalMeshComponent* MeshComp;
@@ -80,4 +82,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin="10", ClampMax="300"))
 	int AmmoCapacity;
+
+	void ApplyRecoil(int recoil);
 };

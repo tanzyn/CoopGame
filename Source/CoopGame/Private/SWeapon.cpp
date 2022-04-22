@@ -23,6 +23,7 @@ ASWeapon::ASWeapon()
 	BulletsPerMinute = 600;
 
 	AmmoLeft = 0;
+	CurrRecoil = 0;
 }
 
 void ASWeapon::BeginPlay()
@@ -41,6 +42,7 @@ void ASWeapon::StartFire()
 
 void ASWeapon::StopFire()
 {
+	CurrRecoil = 0;
 	GetWorldTimerManager().ClearTimer(TimerHandle_TimeBetweenShots);
 }
 
@@ -58,8 +60,8 @@ void ASWeapon::Fire()
 		FVector EyeLocation;
 		FRotator EyeRotation;
 		MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
-
-		FVector ShotDirection = (EyeRotation + ApplyBulletSpread()).Vector();
+		ApplyRecoil(1);
+		FVector ShotDirection = (EyeRotation + ApplyBulletSpread() + FRotator(CurrRecoil,0,0)).Vector();
 		FVector TraceEnd = EyeLocation + (ShotDirection * 1000);
 
 		FCollisionQueryParams QueryParams;
@@ -98,10 +100,11 @@ void ASWeapon::Fire()
 			{
 				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SelectedEffect, Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
 			}
-
+			
 			TracerEndPoint = Hit.ImpactPoint;
 		}
 
+		CurrRecoil = (CurrRecoil + 1) % 25;
 		PlayFireEffects(TracerEndPoint);
 		AmmoLeft--;
 		LastFireTime = GetWorld()->TimeSeconds;
@@ -140,4 +143,10 @@ void ASWeapon::PlayFireEffects(const FVector &TracerEndPoint)
 void ASWeapon::Reload()
 {
 	AmmoLeft = AmmoCapacity;
+}
+
+void ASWeapon::ApplyRecoil(int recoil)
+{
+	APlayerCameraManager* PlayerCamera = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
+	PlayerCamera->AddActorWorldRotation(FRotator(recoil,0,0));
 }
